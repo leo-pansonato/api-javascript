@@ -84,4 +84,19 @@ async function handleSignin(user_name, user_email, user_tel, user_pass) {
     }
 }
 
-module.exports = { handleLogin, handleSignin }
+async function handleVerifyAuth (id_user, token) {
+    try {
+        // Procura pelo usuário com email e senha
+        const response = await sql.oneOrNone(`SELECT id_user, hash FROM auth WHERE id_user = $1`, [id_user]);
+        const { hash } = response;
+
+        const result = await bcrypt.compare(token, hash);
+
+        return {autorizado: result};
+
+    } catch (authVerifyError) {
+        return {autorizado: false};
+    }
+}
+
+module.exports = { handleLogin, handleSignin, handleVerifyAuth }

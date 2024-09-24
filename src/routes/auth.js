@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const router = express.Router();
 
-const { handleLogin, handleSignin } = require('../functions/authFunctions');
+const { handleLogin, handleSignin, handleVerifyAuth } = require('../functions/authFunctions');
 
 // LOGIN
 router.post('/login', async (req, res) => {
@@ -32,6 +32,21 @@ router.post('/cadastro', async (req, res) => {
 
     } catch (e) {
         res.status(500).send(`Erro ao cadastrar. ${e}`);
+    }
+});
+
+// VERIFICAR TOKEN (TESTE)
+router.get('/verificar', async (req, res) => {
+    try {
+        const { id_user, token } = req.body;
+
+        // Verifica se os campos estão preenchidos  
+        if (!id_user || !token) return res.json({autorizado: false, message: "Dados incompletos."});
+
+        return res.json(await handleVerifyAuth(id_user, token));
+
+    } catch (e) {
+        res.status(500).send(`Erro ao Verificar. ${e}`);
     }
 });
 
