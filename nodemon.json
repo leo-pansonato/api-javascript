@@ -1,0 +1,12 @@
+{
+    "watch": [
+        "src/server.js",
+        "src/functions/",
+        "src/routes/"
+    ],
+    "ext": "js,json",
+    "ignore": [
+        "node_modules/"
+    ],
+    "exec": "node src/server.js"
+}
