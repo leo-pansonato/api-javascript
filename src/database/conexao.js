@@ -3,14 +3,14 @@ const pgp = require('pg-promise')({
 });
 require('dotenv').config();
 
-let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
+let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD, PGPORT } = process.env;
 
 const cn = {
   host: PGHOST,
   database: PGDATABASE,
   user: PGUSER,
   password: PGPASSWORD,
-  port: 5432,
+  port: PGPORT,
   ssl: { rejectUnauthorized: false }
 };
 

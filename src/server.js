@@ -12,5 +12,5 @@ try {
 }
 
 
-const PORT = process.env.PORT;
-app.listen(PORT, () => console.log(`Rodando na porta http://localhost:${PORT}/API/`));
+const SERVERPORT = process.env.SERVERPORT;
+app.listen(SERVERPORT, () => console.log(`Rodando na porta http://localhost:${SERVERPORT}/API/`));
