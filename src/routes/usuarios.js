@@ -1,28 +1,49 @@
-const express = require('express');
-const sql = require('../database/conexao');  // Importando a função sql
+const express = require("express");
+const sql = require("../database/conexao"); // Importando a função sql
 
 const router = express.Router();
 
+const { handleVerifyAuth } = require("../functions/authFunctions");
 
 // READ all
-router.get('/', async (req, res) => {
-  try {
-    const users = await sql.any(`SELECT * FROM users`);
-    res.json(users);
-  } catch (e) {
-    res.status(500).send(`Erro ao obter usuário. Erro: ${e}`);
-  }
+router.get("/", async (req, res) => {
+   try {
+      const { id_user, token } = req.body;
+
+      if (!id_user || !token) {
+         return res.status(400).send(`Parâmetros incorretos.`);
+      }
+
+      if (!(await handleVerifyAuth(id_user, token)).autorizado) {
+         return res.status(401).send(`Não Autorizado.`);
+      }
+
+      const users = await sql.any(`SELECT * FROM users`);
+      res.json(users);
+   } catch (e) {
+      res.status(500).send(`Erro ao obter usuário. Erro: ${e}`);
+   }
 });
 
 // READ by ID
-router.get('/:id', async (req, res) => {
-  try {
-    const { id } = req.params
-    const user = await sql.one(`SELECT * FROM users WHERE id_user=$1`, [id]);
-    res.json(user);
-  } catch (e) {
-    res.status(500).send(`Erro ao obter usuário. Erro: ${e}`);
-  }
+router.get("/:id", async (req, res) => {
+   try {
+      const { id } = req.params;
+      const { id_user, token } = req.body;
+
+      if (!id || !id_user || !token) {
+         return res.status(400).send(`Parâmetros incorretos.`);
+      }
+
+      if (!(await handleVerifyAuth(id_user, token)).autorizado) {
+         return res.status(401).send(`Não Autorizado.`);
+      }
+
+      const user = await sql.oneOrNone(`SELECT * FROM users WHERE id_user = $1`, [id]);
+      return res.json(user);
+   } catch (e) {
+      res.status(500).send(`Erro ao obter usuário. Erro: ${e}`);
+   }
 });
 
 // CREATE
